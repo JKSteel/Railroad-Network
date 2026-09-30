@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Global Network of Railroads</title>
+    <link rel="icon" href="data:," />
+
+    <!-- MapLibre draws the basemap and tracks; deck.gl draws the moving trains on the GPU (WebGL);
+         pmtiles lets MapLibre read track tiles from one static file -->
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css" />
+    <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
+    <script src="https://unpkg.com/pmtiles@4.5.0/dist/pmtiles.js"></script>
+    <script src="https://unpkg.com/deck.gl@9.4.0/dist.min.js"></script>
+
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+    <div id="map"></div>
+
+    <!-- Map layers: show or hide parts of the basemap and the extra track classes -->
+    <div id="layers">
+        <button id="layers-button" title="Map layers" aria-label="Map layers" aria-expanded="false" aria-controls="layers-panel">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+                <path d="M12 3 2.5 8 12 13l9.5-5z" /><path d="m2.5 12 9.5 5 9.5-5" /><path d="m2.5 16 9.5 5 9.5-5" />
+            </svg>
+        </button>
+        <div id="layers-panel" hidden></div>
+    </div>
+
+    <div id="hud">
+    <!-- The clicked train's route; stays until you click elsewhere -->
+    <div id="card" hidden>
+        <button id="card-close" title="Close (Esc)" aria-label="Close">×</button>
+        <a id="card-image-link" target="_blank" rel="noopener" title="Image from Wikipedia - opens its page, with author and licence" hidden>
+            <img id="card-image" alt="" />
+        </a>
+        <div id="card-name"></div>
+        <div id="card-name-en"></div>
+        <div id="card-meta"></div>
+        <div id="card-service"></div>
+        <div id="card-basis"></div>
+        <div id="card-links"></div>
+    </div>
+
+    <div id="panel">
+        <div id="modes" class="seg">
+            <button data-mode="country">Country</button>
+            <button data-mode="continent">Continent</button>
+            <button data-mode="world">World</button>
+        </div>
+        <div id="picker">
+            <select id="place" aria-label="Country or continent"></select>
+            <div id="clipmode" class="seg" title="Trains on routes that cross the border: stop at it, or follow them all the way">
+                <button data-clip="1">Clip at border</button>
+                <button data-clip="0">Full routes</button>
+            </div>
+        </div>
+        <div id="types" class="seg" role="group" aria-label="Train types shown"></div>
+        <div class="row" id="frequency-row">
+            <span>Frequency</span>
+            <div id="frequency" class="seg" role="group" aria-label="Train frequency"></div>
+        </div>
+        <div id="lengths" class="row" title="Only show trains on routes this long">
+            <label for="len-min">Route length</label>
+            <input id="len-min" type="number" min="0" step="1" inputmode="decimal" aria-label="Shortest route, km" />
+            <span>–</span>
+            <input id="len-max" type="number" min="0" step="1" inputmode="decimal" placeholder="max" aria-label="Longest route, km" />
+            <span>km</span>
+        </div>
+        <div class="row">
+            <button id="play" title="Play / pause (space)">❚❚</button>
+            <div id="rates" title="Simulated time per second"></div>
+        </div>
+        <div id="running"><b id="count">0</b> trains running</div>
+        <div id="legend"></div>
+        <div id="note">Not a timetable: a steady flow of trains, with speeds estimated from OpenStreetMap.
+            Railway data <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a>.
+            <span id="status"></span></div>
+    </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
